@@ -39,34 +39,42 @@ def num_to_str(num, precision=2):
   """
   return '%.{0}f'.format(str(precision)) % num 
 
-def get_prices_array(price_bucket):
-  """
-  Creates an array of price bucket cutoffs in micro-amounts
-  from a price_bucket configuration.
+def get_prices_array(price_buckets):
+    """
+    Creates an array of price bucket cutoffs in micro-amounts
+    from a price_bucket configuration.
+    Args:
+      price_bucket (object): the price bucket configuration
+    Returns:
+      an array of integers: every price bucket cutoff from:
+        int(round(price_bucket['min'] * 10**6, precision)) to
+        int(round(price_bucket['max'] * 10**6, precision))
+    """
 
-  Args:
-    price_bucket (object): the price bucket configuration
-  Returns:
-    an array of integers: every price bucket cutoff from:
-      int(round(price_bucket['min'] * 10**6, precision)) to 
-      int(round(price_bucket['max'] * 10**6, precision))
-  """
-  start_cpm = price_bucket['min'] if price_bucket['min'] >=0 else 0.00
-  end_cpm =  price_bucket['max']
-  increment = price_bucket['increment']
-  precision = price_bucket['precision']
+    # Arbitrary max CPM to prevent large user errors.
+    prices = []
+    for price_bucket in price_buckets:
+      cpm_max_allowed = 500.00
+      end_cpm = (
+        price_bucket['max'] if
+        price_bucket['max'] < cpm_max_allowed else
+        cpm_max_allowed)
 
-  start_cpm_micro_amount = num_to_micro_amount(start_cpm, precision)
-  end_cpm_micro_amount = num_to_micro_amount(end_cpm, precision)
-  increment_micro_amount = num_to_micro_amount(increment, precision)
+      start_cpm = price_bucket['min'] if price_bucket['min'] >= 0 else 0.00
+      increment = price_bucket['increment']
+      precision = price_bucket['precision']
 
-  current_cpm_micro_amount = start_cpm_micro_amount
-  prices = []
-  while current_cpm_micro_amount <= end_cpm_micro_amount:
-    prices.append(current_cpm_micro_amount)
-    current_cpm_micro_amount += increment_micro_amount
-    
-  return prices
+      start_cpm_micro_amount = num_to_micro_amount(start_cpm, precision)
+      end_cpm_micro_amount = num_to_micro_amount(end_cpm, precision)
+      increment_micro_amount = num_to_micro_amount(increment, precision)
+
+      current_cpm_micro_amount = start_cpm_micro_amount
+
+      while current_cpm_micro_amount <= end_cpm_micro_amount:
+        prices.append(current_cpm_micro_amount)
+        current_cpm_micro_amount += increment_micro_amount
+
+    return prices
 
 def get_prices_summary_string(prices_array, precision=2):
   """
