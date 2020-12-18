@@ -20,6 +20,7 @@ DFP_ADVERTISER_NAME = None
 
 # Names of placements the line items should target.
 DFP_TARGETED_PLACEMENT_NAMES = []
+DFP_TARGETED_AD_UNIT_NAMES = []
 
 # Names of ad units the line items should target.
 DFP_TARGETED_AD_UNIT_NAMES = []
@@ -27,13 +28,13 @@ DFP_TARGETED_AD_UNIT_NAMES = []
 # Sizes of placements. These are used to set line item and creative sizes.
 DFP_PLACEMENT_SIZES = [
   {
-    'width': '300',
-    'height': '250'
+    'width': '320',
+    'height': '50'
   },
   {
-    'width': '728',
-    'height': '90'
-  },
+    'width': '300',
+    'height': '250'
+  }
 ]
 
 # If DFP_VIDEO_AD_TYPE is set to False, traditional ad units will be created.
@@ -51,7 +52,7 @@ DFP_CREATE_ADVERTISER_IF_DOES_NOT_EXIST = False
 # If settings.DFP_ORDER_NAME is the same as an existing order, add the created
 # line items to that order. If False, the program will exit rather than
 # modify an existing order.
-DFP_USE_EXISTING_ORDER_IF_EXISTS = False
+DFP_USE_EXISTING_ORDER_IF_EXISTS = True
 
 # Optional
 # Each line item should have at least as many creatives as the number of
@@ -84,12 +85,26 @@ PREBID_BIDDER_CODE = None
 # http://prebid.org/dev-docs/publisher-api-reference.html#module_pbjs.setPriceGranularity
 # FIXME: this should be an array of buckets. See:
 # https://github.com/prebid/Prebid.js/blob/8fed3d7aaa814e67ca3efc103d7d306cab8c692c/src/cpmBucketManager.js
-PREBID_PRICE_BUCKETS = {
-  'precision': 2,
-  'min' : 0,
-  'max' : 20,
-  'increment': 0.10,
-}
+PREBID_PRICE_BUCKETS = [
+	{
+	  'precision': 2,
+	  'min' : 0,
+	  'max' : 3,
+	  'increment': 0.01,
+	},
+	{
+	  'precision': 2,
+	  'min' : 3.05,
+	  'max' : 8.00,
+	  'increment': 0.05,
+	},
+	{
+	  'precision': 2,
+	  'min' : 8.5,
+	  'max' : 20,
+	  'increment': 0.50,
+	},
+]
 
 #########################################################################
 
